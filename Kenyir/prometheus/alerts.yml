@@ -1,0 +1,12 @@
+# kenyir/prometheus/alerts.yml
+groups:
+- name: example
+  rules:
+  - alert: HighErrorRate
+    expr: rate(http_requests_total{status="500"}[5m]) > 0.1
+    for: 10m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High error rate detected"
+      description: "Error rate is above 0.1 for the last 10 minutes."

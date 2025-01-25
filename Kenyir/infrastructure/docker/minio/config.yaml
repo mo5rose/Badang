@@ -1,0 +1,13 @@
+# infrastructure/docker/minio/config.yaml
+version: '1'
+pools:
+- name: data-pool
+  servers:
+  - url: http://minio:9000
+  credentials:
+    accessKey: minioadmin
+    secretKey: minioadmin
+  buckets:
+  - name: raw-data
+  - name: processed-data
+  - name: curated-data

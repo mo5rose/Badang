@@ -1,0 +1,45 @@
+# modules/monitoring/templates/prometheus-values.yaml
+grafana:
+  enabled: true
+  persistence:
+    enabled: true
+    size: 10Gi
+  dashboards:
+    default:
+      datalake-overview:
+        json: |-
+          ${datalake_overview_dashboard}
+  additionalDataSources:
+    - name: CloudWatch
+      type: cloudwatch
+      jsonData:
+        authType: default
+        defaultRegion: ${aws_region}
+
+prometheus:
+  prometheusSpec:
+    retention: ${retention_period}
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: ${storage_size}
+
+alertmanager:
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ['alertname', 'job']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'sns'
+    receivers:
+    - name: 'sns'
+      sns_configs:
+      - topic_arn: ${sns_topic_arn}
+        sending_time: '30s'

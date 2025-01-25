@@ -1,0 +1,61 @@
+# config/master_config.yml
+infrastructure:
+  primary_region: "eastus2"
+  secondary_region: "westus2"
+  network:
+    vnet_address_space: "10.0.0.0/16"
+    subnets:
+      data: "10.0.1.0/24"
+      compute: "10.0.2.0/24"
+      integration: "10.0.3.0/24"
+
+disaster_recovery:
+  rpo_hours: 4
+  rto_hours: 8
+  backup_retention_days: 90
+  geo_replication: true
+  backup_schedule:
+    full: "0 0 * * 0" # Weekly
+    incremental: "0 */4 * * *" # Every 4 hours
+    snapshot: "0 */1 * * *" # Hourly
+
+performance:
+  auto_scaling:
+    enabled: true
+    min_nodes: 2
+    max_nodes: 10
+  optimization:
+    check_interval_minutes: 15
+    auto_optimize: true
+  monitoring:
+    metrics_retention_days: 90
+    alert_thresholds:
+      latency_ms: 1000
+      error_rate_percent: 1
+
+cost_management:
+  budget_alerts:
+    threshold_percentages: [ 50, 75, 90, 100 ]
+    contact_emails: [ "team@company.com" ]
+  optimization:
+    auto_cleanup_enabled: true
+    inactive_resource_days: 30
+
+integration:
+  sources:
+  - name: "sales_system"
+    type: "sql_server"
+    refresh_interval: "15m"
+  - name: "crm_system"
+    type: "salesforce"
+    refresh_interval: "1h"
+  - name: "erp_system"
+    type: "sap"
+    refresh_interval: "4h"
+
+monitoring:
+  log_retention_days: 90
+  metrics_retention_days: 365
+  alerts:
+    critical_contacts: [ "oncall@company.com" ]
+    warning_contacts: [ "team@company.com" ]

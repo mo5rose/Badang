@@ -1,0 +1,8 @@
+# config.yml
+ai_modules:
+- name: predictive_maintenance
+  data_path: /badang/kenyir/data/data.csv
+  dependencies:
+  - anomaly_detection
+- name: anomaly_detection
+  data_path: /badang/kenyir/data/data.csv

@@ -1,0 +1,8 @@
+# kenyir/infrastructure/prometheus/alertmanager.yml
+route:
+  receiver: 'slack'
+receivers:
+- name: 'slack'
+  slack_configs:
+  - api_url: 'https://hooks.slack.com/services/your/slack/webhook'
+    channel: '#alerts'

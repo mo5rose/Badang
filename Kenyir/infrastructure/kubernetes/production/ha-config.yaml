@@ -1,0 +1,57 @@
+# infrastructure/kubernetes/production/ha-config.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: minio-ha
+spec:
+  serviceName: minio
+  replicas: 4
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+      - name: minio
+        image: minio/minio
+        args:
+        - server
+        - http://minio-{0...3}.minio.datalake.svc.cluster.local/data
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - name: data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 100Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: spark-master-ha
+spec:
+  serviceName: spark-master
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spark-master
+  template:
+    metadata:
+      labels:
+        app: spark-master
+    spec:
+      containers:
+      - name: spark-master
+        image: ${ECR_REGISTRY}/datalake-spark-master:latest
+        ports:
+        - containerPort: 7077
+        - containerPort: 8080

@@ -1,0 +1,31 @@
+# infrastructure/production/performance-tuning.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: performance-tuning
+data:
+  spark-defaults.conf: |
+    spark.driver.memory=8g
+    spark.executor.memory=16g
+    spark.executor.cores=4
+    spark.default.parallelism=200
+    spark.sql.shuffle.partitions=200
+    spark.memory.fraction=0.8
+    spark.memory.storageFraction=0.3
+    spark.speculation=true
+
+  trino-config.properties: |
+    coordinator=true
+    node-scheduler.include-coordinator=false
+    http-server.http.port=8080
+    query.max-memory=50GB
+    query.max-memory-per-node=10GB
+    memory.heap-headroom-per-node=4GB
+
+  minio-config.env: |
+    MINIO_CACHE_DRIVES="/cache"
+    MINIO_CACHE_EXCLUDE="*.pdf,*.mp4"
+    MINIO_CACHE_QUOTA=80
+    MINIO_CACHE_AFTER=0
+    MINIO_CACHE_WATERMARK_LOW=70
+    MINIO_CACHE_WATERMARK_HIGH=80

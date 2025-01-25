@@ -1,0 +1,62 @@
+# config/enterprise_datalake.yml
+environment: production
+
+storage:
+  providers:
+  - azure_storage:
+      account_name: enterprisedatalake
+      containers:
+      - name: landing
+        access_tier: Hot
+        retention_days: 7
+      - name: raw
+        access_tier: Cool
+        retention_days: 90
+      # ... other containers
+
+compute:
+  spark:
+    version: "3.5.0"
+    config:
+      executor_memory: "16g"
+      executor_cores: 4
+      max_executors: 20
+  databricks:
+    workspace_url: "https://your-workspace.azuredatabricks.net"
+    cluster_config:
+      node_type_id: "Standard_DS4_v2"
+      auto_scaling:
+        min_workers: 2
+        max_workers: 8
+
+security:
+  encryption:
+    at_rest: true
+    in_transit: true
+  authentication:
+    method: "azure_ad"
+    mfa_required: true
+  network:
+    private_endpoints: true
+    allowed_ip_ranges: [ "10.0.0.0/8" ]
+
+governance:
+  metadata:
+    catalog: "Azure Purview"
+    auto_tagging: true
+  quality:
+    validation_framework: "great_expectations"
+    minimum_score: 0.95
+  compliance:
+    gdpr_enabled: true
+    pii_detection: true
+
+monitoring:
+  metrics:
+    collection_interval: "1m"
+    retention_period: "90d"
+  alerts:
+    email_recipients: [ "team@company.com" ]
+    critical_thresholds:
+      latency_ms: 1000
+      error_rate: 0.01

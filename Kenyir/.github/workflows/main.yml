@@ -1,0 +1,45 @@
+# .github/workflows/main.yml
+name: Enterprise Data Lake CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+    - name: Run Tests
+      run: |
+        pip install -r requirements.txt
+        pytest tests/ --cov=core
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Security Scan
+      uses: snyk/actions/python@master
+
+  deploy-dev:
+    needs: [ test, security-scan ]
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Dev
+      run: python deploy_enterprise_datalake.py --env dev
+
+  deploy-prod:
+    needs: [ test, security-scan ]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Prod
+      run: python deploy_enterprise_datalake.py --env prod

@@ -1,0 +1,16 @@
+# config/backup_policy.yml
+backup_policies:
+  critical_data:
+    frequency: "4_hours"
+    retention_days: 90
+    geo_redundant: true
+
+  regular_data:
+    frequency: "daily"
+    retention_days: 30
+    geo_redundant: false
+
+  archive_data:
+    frequency: "weekly"
+    retention_days: 365
+    geo_redundant: true

@@ -1,0 +1,7 @@
+from sklearn.ensemble import RandomForestClassifier
+import joblib
+
+# Train a sample model
+model = RandomForestClassifier()
+# Save the model
+joblib.dump(model, "meterAPI/predictive_maintenance/predictive_maintenance_model.pkl")

@@ -1,0 +1,7 @@
+Django>=3.0,<4.0
+djangorestframework
+django-cors-headers
+confluent-kafka
+opcua
+dj-database-url
+psycopg2-binary

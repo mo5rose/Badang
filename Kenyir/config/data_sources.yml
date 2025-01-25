@@ -1,0 +1,46 @@
+# config/data_sources.yml
+databases:
+  postgresql:
+    host: localhost
+    port: 5432
+    database: source_db
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  mysql:
+    host: mysql.server
+    port: 3306
+    database: analytics
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+
+  mongodb:
+    connection_string: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongodb.server:27017
+    database: source_data
+    collection: raw_data
+
+streaming:
+  kafka:
+    bootstrap_servers: kafka1:9092,kafka2:9092
+    topics:
+    - events
+    - logs
+    - metrics
+    group_id: datalake-consumer
+
+file_locations:
+  structured:
+  - path: /data/source/csv
+    type: csv
+  - path: /data/source/parquet
+    type: parquet
+  - path: /data/source/json
+    type: json
+
+storage:
+  azure_blob:
+    connection_string: ${AZURE_STORAGE_CONNECTION_STRING}
+    containers:
+    - raw
+    - processed
+    - curated

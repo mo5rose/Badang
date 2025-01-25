@@ -1,0 +1,19 @@
+# infrastructure/monitoring/production/alertmanager.yml
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: [ 'alertname', 'cluster', 'service' ]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: 'team-emails'
+
+receivers:
+- name: 'team-emails'
+  email_configs:
+  - to: 'team@company.com'
+    from: 'alertmanager@company.com'
+    smarthost: 'smtp.company.com:587'
+    auth_username: '${SMTP_USER}'
+    auth_password: '${SMTP_PASSWORD}'

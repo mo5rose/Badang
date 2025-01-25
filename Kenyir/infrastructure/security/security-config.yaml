@@ -1,0 +1,47 @@
+# infrastructure/security/security-config.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: datalake-network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: datalake
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          role: datalake-client
+    ports:
+    - protocol: TCP
+      port: 9000
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: datalake
+    ports:
+    - protocol: TCP
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: datalake-psp
+spec:
+  privileged: false
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  runAsUser:
+    rule: MustRunAsNonRoot
+  fsGroup:
+    rule: RunAsAny
+  volumes:
+  - 'configMap'
+  - 'emptyDir'
+  - 'persistentVolumeClaim'
+  - 'secret'

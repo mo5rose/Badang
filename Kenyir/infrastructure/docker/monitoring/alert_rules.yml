@@ -1,0 +1,19 @@
+# infrastructure/monitoring/alert_rules.yml
+groups:
+- name: datalake
+  rules:
+  - alert: HighStorageUsage
+    expr: minio_bucket_usage_size_bytes / minio_bucket_quota_bytes > 0.85
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: High storage usage (>85%) in bucket {{ $labels.bucket }}
+
+  - alert: SparkJobFailed
+    expr: spark_job_failed > 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: Spark job failed - {{ $labels.job_name }}

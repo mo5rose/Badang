@@ -1,0 +1,21 @@
+# infrastructure/monitoring/grafana-dashboard.yaml
+apiVersion: 1
+providers:
+- name: 'Data Lake Dashboards'
+  orgId: 1
+  folder: 'Data Lake'
+  type: file
+  options:
+    path: /var/lib/grafana/dashboards
+
+dashboards:
+- name: 'Data Lake Overview'
+  panels:
+  - title: 'Storage Usage'
+    type: graph
+  - title: 'Processing Performance'
+    type: graph
+  - title: 'Cost Analysis'
+    type: graph
+  - title: 'Data Quality Metrics'
+    type: stat

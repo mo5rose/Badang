@@ -1,0 +1,31 @@
+# infrastructure/kubernetes/data-lake-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-lake-processing
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: data-lake
+  template:
+    metadata:
+      labels:
+        app: data-lake
+    spec:
+      containers:
+      - name: data-processing
+        image: your-registry.azurecr.io/data-lake-processing:latest
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "2"
+          limits:
+            memory: "8Gi"
+            cpu: "4"
+        env:
+        - name: AZURE_TENANT_ID
+          valueFrom:
+            secretKeyRef:
+              name: azure-secrets
+              key: tenant-id

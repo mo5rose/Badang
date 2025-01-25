@@ -1,0 +1,17 @@
+# config/data_quality_rules.yml
+rules:
+- name: "completeness_check"
+  type: "column_null_check"
+  threshold: 0.95
+  severity: "high"
+
+- name: "freshness_check"
+  type: "data_freshness"
+  max_delay_hours: 24
+  severity: "critical"
+
+- name: "accuracy_check"
+  type: "statistical_validation"
+  method: "std_dev"
+  threshold: 3
+  severity: "medium"
